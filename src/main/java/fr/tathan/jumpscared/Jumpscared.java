@@ -1,10 +1,19 @@
 package fr.tathan.jumpscared;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.ToNumberPolicy;
 import com.mojang.logging.LogUtils;
+import fr.tathan.jumpscared.common.command.SuggestionProviders;
+import fr.tathan.jumpscared.common.registry.DataAttachmentsRegistry;
+import fr.tathan.jumpscared.common.registry.DataComponentsRegistry;
+import fr.tathan.jumpscared.common.registry.ItemsRegistry;
+import fr.tathan.jumpscared.common.registry.SoundsRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -38,49 +47,30 @@ public class Jumpscared {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "jumpscared";
     // Directly reference a slf4j logger
-    private static final Logger LOGGER = LogUtils.getLogger();
-    // Create a Deferred Register to hold Blocks which will all be registered under the "jumpscared" namespace
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
-    // Create a Deferred Register to hold Items which will all be registered under the "jumpscared" namespace
-    public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
-    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "jumpscared" namespace
+    public static final Logger LOGGER = LogUtils.getLogger();
+    public static final Gson GSON = new GsonBuilder()
+            .setPrettyPrinting()
+            .setLenient()
+            .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
+            .create();
+
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    // Creates a new Block with the id "jumpscared:example_block", combining the namespace and path
-    public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
-    // Creates a new BlockItem with the id "jumpscared:example_block", combining the namespace and path
-    public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
-
-    // Creates a new food item with the id "jumpscared:example_id", nutrition 1 and saturation 2
-    public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder().alwaysEdible().nutrition(1).saturationModifier(2f).build()));
-
-    // Creates a creative tab with the id "jumpscared:example_tab" for the example item, that is placed after the combat tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder().title(Component.translatable("itemGroup.jumpscared")).withTabsBefore(CreativeModeTabs.COMBAT).icon(() -> EXAMPLE_ITEM.get().getDefaultInstance()).displayItems((parameters, output) -> {
-        output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-    }).build());
-
-    // The constructor for the mod class is the first code that is run when your mod is loaded.
-    // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
     public Jumpscared(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
-        // Register the Deferred Register to the mod event bus so blocks get registered
-        BLOCKS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so items get registered
-        ITEMS.register(modEventBus);
-        // Register the Deferred Register to the mod event bus so tabs get registered
+        DataComponentsRegistry.DATA_COMPONENT_TYPE.register(modEventBus);
+        DataAttachmentsRegistry.ATTACHMENT_TYPES.register(modEventBus);
+        ItemsRegistry.ITEMS.register(modEventBus);
+        SoundsRegistry.SOUND_EVENTS.register(modEventBus);
+        SuggestionProviders.init();
         CREATIVE_MODE_TABS.register(modEventBus);
 
-        // Register ourselves for server and other game events we are interested in.
-        // Note that this is necessary if and only if we want *this* class (Jumpscared) to respond directly to events.
-        // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
 
-        // Register the item to a creative tab
-        modEventBus.addListener(this::addCreative);
+        //modEventBus.addListener(this::addCreative);
 
-        // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
@@ -96,25 +86,17 @@ public class Jumpscared {
     }
 
     // Add the example block item to the building blocks tab
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) event.accept(EXAMPLE_BLOCK_ITEM);
+//    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+//        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) event.accept(ItemsRegistry.EXAMPLE_BLOCK_ITEM);
+//    }
+
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
-    // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-        // Do something when the server starts
         LOGGER.info("HELLO from server starting");
     }
 
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents {
-        @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event) {
-            // Some client setup code
-            LOGGER.info("HELLO FROM CLIENT SETUP");
-            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
-        }
-    }
 }

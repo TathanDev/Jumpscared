@@ -1,0 +1,5 @@
+{
+  "image": "jumpscared:textures/jumpscares/default.png",
+  "sound": "jumpscared:monster_scream",
+  "duration_tick": 60
+}

@@ -1,24 +1,35 @@
 package fr.tathan.jumpscared.common.registry;
 
-import com.mojang.serialization.MapCodec;
 import fr.tathan.jumpscared.Jumpscared;
 import fr.tathan.jumpscared.common.jumpscare.JumpScare;
-import fr.tathan.jumpscared.common.util.Utils;
-import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 
-public class DataAttachments {
+public class DataAttachmentsRegistry {
 
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, Jumpscared.MODID);
 
-    public static final Supplier<AttachmentType< Map<BlockPos, JumpScare> >> JUMPSCARE = ATTACHMENT_TYPES.register(
-            "jumpscare", () -> AttachmentType.<Map<BlockPos, JumpScare>>builder(Map::of).serialize(Utils.pairMapCodec(BlockPos.CODEC, JumpScare.CODEC).fieldOf("data")).build()
+    /**
+     * Used to store JumpScare data for chunks
+     */
+    public static final Supplier<AttachmentType<JumpScare.Container>> JUMPSCARE_CONTAINER = ATTACHMENT_TYPES.register(
+            "jumpscares", () -> AttachmentType.builder(() -> new JumpScare.Container(new HashMap<>()))
+                    .serialize(JumpScare.Container.CONTAINER_CODEC)
+                    .sync(JumpScare.Container.STREAM_CODEC).build()
+    );
+
+    /**
+     * Used to store JumpScare data for player
+     */
+    public static final Supplier<AttachmentType<JumpScare>> JUMPSCARE = ATTACHMENT_TYPES.register(
+            "jumpscare", () -> AttachmentType.<JumpScare>builder(() -> null)
+                    .serialize(JumpScare.CODEC)
+                    .sync(JumpScare.STREAM_CODEC)
+                    .build()
     );
 
 }
