@@ -1,0 +1,6 @@
+{
+  "id": "jumpscared:zombie",
+  "image": "jumpscared:textures/jumpscare/zombie.png",
+  "sound": "minecraft:block.note_block.imitate.zombie",
+  "duration_tick": 60
+}

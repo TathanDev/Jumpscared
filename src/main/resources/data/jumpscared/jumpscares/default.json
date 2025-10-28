@@ -1,5 +1,6 @@
 {
-  "image": "jumpscared:textures/jumpscares/default.png",
+  "id": "jumpscared:default",
+  "image": "minecraft:textures/mob_effect/blindness.png",
   "sound": "jumpscared:monster_scream",
-  "duration_tick": 60
+  "duration_tick": 240
 }

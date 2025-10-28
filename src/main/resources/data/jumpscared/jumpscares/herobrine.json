@@ -1,0 +1,6 @@
+{
+  "id": "jumpscared:herobrine",
+  "image": "jumpscared:textures/jumpscare/herobrine.png",
+  "sound": "minecraft:entity.generic.explode",
+  "duration_tick": 60
+}

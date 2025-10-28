@@ -6,7 +6,7 @@ import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class DataAttachmentsRegistry {
@@ -16,10 +16,10 @@ public class DataAttachmentsRegistry {
     /**
      * Used to store JumpScare data for chunks
      */
-    public static final Supplier<AttachmentType<JumpScare.Container>> JUMPSCARE_CONTAINER = ATTACHMENT_TYPES.register(
-            "jumpscares", () -> AttachmentType.builder(() -> new JumpScare.Container(new HashMap<>()))
-                    .serialize(JumpScare.Container.CONTAINER_CODEC)
-                    .sync(JumpScare.Container.STREAM_CODEC).build()
+    public static final Supplier<AttachmentType<JumpScare.NewContainer>> JUMPSCARE_CONTAINER = ATTACHMENT_TYPES.register(
+            "jumpscares", () -> AttachmentType.builder(() -> new JumpScare.NewContainer(List.of()))
+                    .serialize(JumpScare.NewContainer.CONTAINER_CODEC)
+                    .sync(JumpScare.NewContainer.STREAM_CODEC).build()
     );
 
     /**

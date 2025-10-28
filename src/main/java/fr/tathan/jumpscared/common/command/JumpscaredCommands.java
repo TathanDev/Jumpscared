@@ -1,8 +1,6 @@
 package fr.tathan.jumpscared.common.command;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
-import fr.tathan.jumpscared.Jumpscared;
 import fr.tathan.jumpscared.common.data.JumpScareData;
 import fr.tathan.jumpscared.common.jumpscare.JumpScare;
 import net.minecraft.commands.CommandSourceStack;

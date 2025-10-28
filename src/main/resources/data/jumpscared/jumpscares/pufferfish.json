@@ -1,0 +1,6 @@
+{
+  "id": "jumpscared:pufferfish",
+  "image": "minecraft:textures/item/pufferfish.png",
+  "sound": "minecraft:entity.puffer_fish.sting",
+  "duration_tick": 60
+}

@@ -17,5 +17,4 @@ public class OverlayRegistry {
         event.registerAboveAll(ResourceLocation.fromNamespaceAndPath(Jumpscared.MODID, "jumpscare_overlay"), JumpScareOverlay::render);
     }
 
-
 }

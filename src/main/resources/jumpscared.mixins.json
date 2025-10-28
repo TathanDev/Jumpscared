@@ -4,6 +4,7 @@
   "package": "fr.tathan.jumpscared.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "BlockDestroyedMixin"
   ],
   "client": [
   ],

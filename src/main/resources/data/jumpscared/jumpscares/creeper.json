@@ -1,0 +1,6 @@
+{
+  "id": "jumpscared:creeper",
+  "image": "jumpscared:textures/jumpscare/creeper.png",
+  "sound": "minecraft:entity.generic.explode",
+  "duration_tick": 60
+}

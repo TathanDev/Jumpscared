@@ -1,13 +1,16 @@
 package fr.tathan.jumpscared.client.overlay;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import fr.tathan.jumpscared.Jumpscared;
 import fr.tathan.jumpscared.common.jumpscare.JumpScare;
+import fr.tathan.jumpscared.common.network.packets.RemoveCurrentJumpscare;
 import fr.tathan.jumpscared.common.registry.DataAttachmentsRegistry;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class JumpScareOverlay {
 
@@ -21,7 +24,6 @@ public class JumpScareOverlay {
 
         if(player !=null && player.hasData(DataAttachmentsRegistry.JUMPSCARE)) {
             JumpScare jumpScare = player.getData(DataAttachmentsRegistry.JUMPSCARE);
-            guiGraphics.drawString(Minecraft.getInstance().font, jumpScare.image().toString(), 10, 10, 0xFFFFFF);
 
             int windowWidth = mc.getWindow().getGuiScaledWidth();
 
@@ -36,10 +38,10 @@ public class JumpScareOverlay {
             RenderSystem.setShaderColor(1,1, 1, 1);
             RenderSystem.disableBlend();
 
-            if(durationTicks < jumpScare.durationTick()) {
+            if(durationTicks <= jumpScare.durationTick()) {
                 durationTicks++;
             } else {
-                player.removeData(DataAttachmentsRegistry.JUMPSCARE);
+                PacketDistributor.sendToServer(new RemoveCurrentJumpscare());
                 durationTicks = 0;
             }
         }

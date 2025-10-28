@@ -5,10 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.ToNumberPolicy;
 import com.mojang.logging.LogUtils;
 import fr.tathan.jumpscared.common.command.SuggestionProviders;
-import fr.tathan.jumpscared.common.registry.DataAttachmentsRegistry;
-import fr.tathan.jumpscared.common.registry.DataComponentsRegistry;
-import fr.tathan.jumpscared.common.registry.ItemsRegistry;
-import fr.tathan.jumpscared.common.registry.SoundsRegistry;
+import fr.tathan.jumpscared.common.registry.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -54,18 +51,20 @@ public class Jumpscared {
             .setObjectToNumberStrategy(ToNumberPolicy.LONG_OR_DOUBLE)
             .create();
 
-    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     public Jumpscared(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
 
+        BlocksRegistry.BLOCKS.register(modEventBus);
+        BlockEntityRegistry.BLOCKS_ENTITY.register(modEventBus);
+        MenuRegistry.MENUS.register(modEventBus);
         DataComponentsRegistry.DATA_COMPONENT_TYPE.register(modEventBus);
         DataAttachmentsRegistry.ATTACHMENT_TYPES.register(modEventBus);
         ItemsRegistry.ITEMS.register(modEventBus);
         SoundsRegistry.SOUND_EVENTS.register(modEventBus);
         SuggestionProviders.init();
-        CREATIVE_MODE_TABS.register(modEventBus);
+        CreativeTabsRegistry.CREATIVE_MODE_TABS.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(this);
 
@@ -85,10 +84,7 @@ public class Jumpscared {
         Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
 
-    // Add the example block item to the building blocks tab
-//    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-//        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) event.accept(ItemsRegistry.EXAMPLE_BLOCK_ITEM);
-//    }
+
 
     public static ResourceLocation id(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path);

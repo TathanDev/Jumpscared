@@ -1,5 +1,16 @@
 {
-  "itemGroup.jumpscared": "Example Mod Tab",
-  "block.jumpscared.example_block": "Example Block",
-  "item.jumpscared.example_item": "Example Item"
+  "itemGroup.jumpscared": "Jumpscared",
+  "item.jumpscared.jumpscare": "Jumpscare Scroll",
+  "block.jumpscared.jumpscare_workbench": "Jumpscare Workbench",
+
+  "menu.jumpscared.jumpscared_table": "JumpScare Table",
+
+  "item.jumpscared.jumpscare_setter.tooltip": "JumpScare :",
+  "item.jumpscared.jumpscare_setter.no_jumpscare.tooltip": "No JumpScare set",
+  "jumpscare.jumpscared.creeper": "Creeper",
+  "jumpscare.jumpscared.default": "I See You...",
+  "jumpscare.jumpscared.pufferfish": "Pufferfish",
+  "jumpscare.jumpscared.herobrine": "Herobrine",
+  "jumpscare.jumpscared.zombie": "Zombie"
+
 }

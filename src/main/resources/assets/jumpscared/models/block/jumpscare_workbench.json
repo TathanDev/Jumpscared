@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "minecraft:block/oak_planks",
+    "east": "jumpscared:block/jumpscare_workbench_side",
+    "north": "jumpscared:block/jumpscare_workbench_side_2",
+    "particle": "minecraft:block/crafting_table_front",
+    "south": "jumpscared:block/jumpscare_workbench_side_1",
+    "up": "jumpscared:block/jumpscare_workbench_top",
+    "west": "jumpscared:block/jumpscare_workbench_side"
+  }
+}

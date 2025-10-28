@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:crafting_table"
+    },
+    {
+      "item": "minecraft:feather"
+    },
+    {
+      "item": "jumpscared:jumpscare"
+    }
+  ],
+  "result": {
+    "id": "jumpscared:jumpscare_workbench",
+    "count": 1
+  }
+}
