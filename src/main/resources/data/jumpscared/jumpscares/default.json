@@ -1,6 +1,6 @@
 {
   "id": "jumpscared:default",
   "image": "minecraft:textures/mob_effect/blindness.png",
-  "sound": "jumpscared:monster_scream",
+  "sound": "entity.warden.listening_angry",
   "duration_tick": 240
 }

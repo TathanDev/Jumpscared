@@ -15,4 +15,8 @@ public class SoundsRegistry {
             () -> SoundEvent.createVariableRangeEvent(Jumpscared.id("monster_scream"))
     );
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> ALEX_SCREAM = SOUND_EVENTS.register("alex_scream",
+            () -> SoundEvent.createVariableRangeEvent(Jumpscared.id("alex_scream"))
+    );
+
 }

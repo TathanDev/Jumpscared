@@ -1,0 +1,6 @@
+{
+  "id": "jumpscared:alex",
+  "image": "jumpscared:textures/jumpscare/alex.png",
+  "sound": "jumpscared:alex_scream",
+  "duration_tick": 60
+}

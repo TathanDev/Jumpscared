@@ -1,8 +1,14 @@
 {
   "monster_scream": {
-    "subtitle": "jumpscared.montser_scream",
+    "subtitle": "jumpscared.monster_scream",
     "sounds": [
       "jumpscared:monster_scream"
+    ]
+  },
+  "alex_scream": {
+    "subtitle": "jumpscared.alex_scream",
+    "sounds": [
+      "jumpscared:alex_scream"
     ]
   }
 }
