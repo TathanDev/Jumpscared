@@ -1,6 +1,7 @@
 package fr.tathan.jumpscared.common.event;
 
 import fr.tathan.jumpscared.Jumpscared;
+import fr.tathan.jumpscared.common.data.JumpScareData;
 import fr.tathan.jumpscared.common.jumpscare.JumpScare;
 import fr.tathan.jumpscared.common.registry.DataAttachmentsRegistry;
 import net.minecraft.core.BlockPos;
@@ -26,17 +27,34 @@ public class Events {
 
         JumpScare.NewContainer container = access.getExistingDataOrNull(DataAttachmentsRegistry.JUMPSCARE_CONTAINER);
 
-        if(container == null || container.map() == null) {
-            return;
+        if(container != null && container.map() != null) {
+            container.map().forEach((pair) -> {
+                if(pair.getFirst().equals(positionString)) {
+                    if(!player.hasData(DataAttachmentsRegistry.CURRENT_PLAYER_JUMPSCARE)) {
+                        pair.getSecond().trigger(player);
+                    }
+                }
+            });
         }
 
-        container.map().forEach((pair) -> {
+
+
+        /**
+         * We do the same things for the ID container to support old jumpscares
+         */
+        JumpScare.IdContainer idContainer = access.getExistingDataOrNull(DataAttachmentsRegistry.JUMPSCARE_ID_CONTAINER);
+        if(idContainer == null || idContainer.jumpscares() == null) {
+            return;
+        }
+        idContainer.jumpscares().forEach((pair) -> {
             if(pair.getFirst().equals(positionString)) {
-                if(!player.hasData(DataAttachmentsRegistry.JUMPSCARE)) {
-                    pair.getSecond().trigger(player);
+                if(!player.hasData(DataAttachmentsRegistry.CURRENT_PLAYER_JUMPSCARE)) {
+                    JumpScareData.JUMPSCARES.getOrDefault(pair.getSecond(), JumpScare.DEFAULT).trigger(player);
                 }
             }
         });
+
+
     }
 
     @SubscribeEvent
@@ -51,18 +69,35 @@ public class Events {
 
         JumpScare.NewContainer container = access.getExistingDataOrNull(DataAttachmentsRegistry.JUMPSCARE_CONTAINER);
 
-        if(container == null || container.map() == null) {
+        if(container != null && container.map() != null) {
+            container.map().forEach((pair) -> {
+                if(pair.getFirst().equals(positionString)) {
+                    if(!player.hasData(DataAttachmentsRegistry.CURRENT_PLAYER_JUMPSCARE)) {
+                        pair.getSecond().trigger(player);
+                        access.setData(DataAttachmentsRegistry.JUMPSCARE_CONTAINER, container.removeJumpScareAt(positionString));
+                    }
+                }
+            });
+        }
+
+
+
+        JumpScare.IdContainer idContainer = access.getExistingDataOrNull(DataAttachmentsRegistry.JUMPSCARE_ID_CONTAINER);
+
+        if(idContainer == null || idContainer.jumpscares() == null) {
             return;
         }
 
-        container.map().forEach((pair) -> {
+        idContainer.jumpscares().forEach((pair) -> {
             if(pair.getFirst().equals(positionString)) {
-                if(!player.hasData(DataAttachmentsRegistry.JUMPSCARE)) {
-                    pair.getSecond().trigger(player);
-                    access.setData(DataAttachmentsRegistry.JUMPSCARE_CONTAINER, container.removeJumpScareAt(positionString));
+                if(!player.hasData(DataAttachmentsRegistry.CURRENT_PLAYER_JUMPSCARE)) {
+                    JumpScareData.JUMPSCARES.getOrDefault(pair.getSecond(), JumpScare.DEFAULT).trigger(player);
+
+                    access.setData(DataAttachmentsRegistry.JUMPSCARE_ID_CONTAINER, idContainer.removeJumpScareAt(positionString));
                 }
             }
         });
+
     }
 
     public static BlockPos getBlockPosFromString(String posString) {

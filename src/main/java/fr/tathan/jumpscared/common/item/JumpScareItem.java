@@ -1,6 +1,8 @@
 package fr.tathan.jumpscared.common.item;
 
 import com.mojang.datafixers.util.Pair;
+import fr.tathan.jumpscared.Jumpscared;
+import fr.tathan.jumpscared.common.data.JumpScareData;
 import fr.tathan.jumpscared.common.event.Events;
 import fr.tathan.jumpscared.common.jumpscare.JumpScare;
 import fr.tathan.jumpscared.common.registry.DataAttachmentsRegistry;
@@ -8,6 +10,7 @@ import fr.tathan.jumpscared.common.registry.DataComponentsRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
@@ -31,6 +34,7 @@ public class JumpScareItem extends Item {
         BlockPos blockPos = context.getClickedPos();
         LevelChunk access = context.getLevel().getChunkAt(blockPos);
         ItemStack stack = context.getItemInHand();
+        String stringBlockPos = Events.getPos(blockPos);
 
         if(stack.has(DataComponentsRegistry.JUMPSCARE_COMPONENT)) {
             JumpScare jumpScare = stack.get(DataComponentsRegistry.JUMPSCARE_COMPONENT);
@@ -41,8 +45,6 @@ public class JumpScareItem extends Item {
                 List<Pair<String, JumpScare>> pairs = List.of(new Pair<>(Events.getPos(blockPos), jumpScare));
                 access.setData(DataAttachmentsRegistry.JUMPSCARE_CONTAINER, new JumpScare.NewContainer(pairs));
             } else {
-                String stringBlockPos = Events.getPos(blockPos);
-
 
                 ArrayList<Pair<String, JumpScare>> pairs = new ArrayList<>(container.map());
                 if(pairs.stream().anyMatch(pair -> pair.getFirst().equals(stringBlockPos))) {
@@ -54,7 +56,34 @@ public class JumpScareItem extends Item {
             }
 
             context.getLevel().playSound(null, blockPos, SoundEvents.WARDEN_LISTENING_ANGRY, context.getPlayer() != null ? context.getPlayer().getSoundSource() : null, 1.0F, 1.0F);
+
         }
+
+        if(stack.has(DataComponentsRegistry.JUMPSCARE_ID_COMPONENT)) {
+
+
+            ResourceLocation jumpScareId = stack.get(DataComponentsRegistry.JUMPSCARE_ID_COMPONENT);
+            JumpScare.IdContainer container = access.getExistingDataOrNull(DataAttachmentsRegistry.JUMPSCARE_ID_CONTAINER);
+
+            if(container == null || container.jumpscares() == null) {
+
+                List<Pair<String, ResourceLocation>> pairs = List.of(new Pair<>(Events.getPos(blockPos), jumpScareId));
+                access.setData(DataAttachmentsRegistry.JUMPSCARE_ID_CONTAINER, new JumpScare.IdContainer(pairs));
+            } else {
+
+
+                ArrayList<Pair<String, ResourceLocation>> pairs = new ArrayList<>(container.jumpscares());
+                if(pairs.stream().anyMatch(pair -> pair.getFirst().equals(stringBlockPos))) {
+                    return InteractionResult.FAIL;
+                }
+                pairs.add(Pair.of(stringBlockPos, jumpScareId));
+
+                access.setData(DataAttachmentsRegistry.JUMPSCARE_ID_CONTAINER, new JumpScare.IdContainer(pairs));
+            }
+
+            context.getLevel().playSound(null, blockPos, SoundEvents.WARDEN_LISTENING_ANGRY, context.getPlayer() != null ? context.getPlayer().getSoundSource() : null, 1.0F, 1.0F);
+        }
+
         return super.useOn(context);
     }
 
@@ -64,6 +93,11 @@ public class JumpScareItem extends Item {
 
         if(stack.has(DataComponentsRegistry.JUMPSCARE_COMPONENT)) {
             JumpScare jumpScare = stack.get(DataComponentsRegistry.JUMPSCARE_COMPONENT);
+            tooltipComponents.add(Component.translatable("item.jumpscared.jumpscare_setter.tooltip").append(" ").append(jumpScare.getDisplayName()).withStyle(ChatFormatting.GRAY));
+
+        } else if(stack.has(DataComponentsRegistry.JUMPSCARE_ID_COMPONENT)) {
+            ResourceLocation jumpScareId = stack.get(DataComponentsRegistry.JUMPSCARE_ID_COMPONENT);
+            JumpScare jumpScare = JumpScareData.JUMPSCARES.getOrDefault(jumpScareId, JumpScare.DEFAULT);
             tooltipComponents.add(Component.translatable("item.jumpscared.jumpscare_setter.tooltip").append(" ").append(jumpScare.getDisplayName()).withStyle(ChatFormatting.GRAY));
         } else {
             tooltipComponents.add(Component.translatable("item.jumpscared.jumpscare_setter.no_jumpscare.tooltip"));

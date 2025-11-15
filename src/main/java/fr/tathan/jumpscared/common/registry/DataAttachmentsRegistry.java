@@ -16,16 +16,23 @@ public class DataAttachmentsRegistry {
     /**
      * Used to store JumpScare data for chunks
      */
+    @Deprecated
     public static final Supplier<AttachmentType<JumpScare.NewContainer>> JUMPSCARE_CONTAINER = ATTACHMENT_TYPES.register(
             "jumpscares", () -> AttachmentType.builder(() -> new JumpScare.NewContainer(List.of()))
                     .serialize(JumpScare.NewContainer.CONTAINER_CODEC)
                     .sync(JumpScare.NewContainer.STREAM_CODEC).build()
     );
 
+    public static final Supplier<AttachmentType<JumpScare.IdContainer>> JUMPSCARE_ID_CONTAINER = ATTACHMENT_TYPES.register(
+            "jumpscares_id", () -> AttachmentType.builder(() -> new JumpScare.IdContainer(List.of()))
+                    .serialize(JumpScare.IdContainer.ID_CONTAINER)
+                    .sync(JumpScare.IdContainer.STREAM_CODEC).build()
+    );
+
     /**
      * Used to store JumpScare data for player
      */
-    public static final Supplier<AttachmentType<JumpScare>> JUMPSCARE = ATTACHMENT_TYPES.register(
+    public static final Supplier<AttachmentType<JumpScare>> CURRENT_PLAYER_JUMPSCARE = ATTACHMENT_TYPES.register(
             "jumpscare", () -> AttachmentType.<JumpScare>builder(() -> null)
                     .serialize(JumpScare.CODEC)
                     .sync(JumpScare.STREAM_CODEC)

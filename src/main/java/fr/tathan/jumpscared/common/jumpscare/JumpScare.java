@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import fr.tathan.jumpscared.common.registry.DataAttachmentsRegistry;
 import fr.tathan.jumpscared.common.registry.SoundsRegistry;
-import fr.tathan.jumpscared.common.util.Utils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -13,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -54,14 +53,60 @@ public record JumpScare(ResourceLocation id, ResourceLocation image, ResourceLoc
     }
 
     public void trigger(Player player) {
-        player.setData(DataAttachmentsRegistry.JUMPSCARE, this);
+        player.setData(DataAttachmentsRegistry.CURRENT_PLAYER_JUMPSCARE, this);
 
         player.getServer().registryAccess().registry(BuiltInRegistries.SOUND_EVENT.key()).ifPresent((sound) -> {
 
-            player.playNotifySound(sound.get(this.sound), SoundSource.MASTER, 1.0F, 0.50F);
+            SoundEvent soundEvent = sound.get(this.sound) != null ? sound.get(this.sound) : SoundsRegistry.MONSTER_SCREAM.get();
+
+            player.playNotifySound(soundEvent, SoundSource.MASTER, 1.0F, 0.50F);
         });
     }
 
+
+
+    public record IdContainer(List<Pair<String, ResourceLocation>> jumpscares) {
+        public static Codec<IdContainer> ID_CONTAINER = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.pair(Codec.STRING.fieldOf("blockpos").codec(), ResourceLocation.CODEC.fieldOf("jumpscareId").codec()).listOf().fieldOf("jumpscares").forGetter(IdContainer::jumpscares)
+        ).apply(instance, IdContainer::new));
+
+        public static StreamCodec<FriendlyByteBuf, IdContainer> STREAM_CODEC = new StreamCodec<>() {
+            @Override
+            public @NotNull JumpScare.IdContainer decode(FriendlyByteBuf byteBuf) {
+
+                int size = byteBuf.readInt();
+                List<Pair<String, ResourceLocation>> list = new java.util.ArrayList<>();
+                for (int i = 0; i < size; i++) {
+                    String key = byteBuf.readUtf();
+                    ResourceLocation id = byteBuf.readResourceLocation();
+                    list.add(Pair.of(key, id));
+                }
+
+                return new IdContainer(list);
+            }
+
+            @Override
+            public void encode(FriendlyByteBuf byteBuf, IdContainer idContainer) {
+                byteBuf.writeInt(idContainer.jumpscares.size());
+                for (Pair<String, ResourceLocation> pair : idContainer.jumpscares) {
+                    byteBuf.writeUtf(pair.getFirst());
+                    byteBuf.writeResourceLocation(pair.getSecond());
+                }
+            }
+        };
+
+        public IdContainer removeJumpScareAt(String posString) {
+
+            ArrayList<Pair<String, ResourceLocation>> list = new ArrayList<>(jumpscares);
+
+            list.removeIf(pair -> pair.getFirst().equals(posString));
+            return new IdContainer(list);
+        }
+    }
+
+
+
+    @Deprecated
     public record NewContainer(List<Pair<String, JumpScare>> map) {
 
         public static Codec<NewContainer> CONTAINER_CODEC = RecordCodecBuilder.create(instance -> instance.group(

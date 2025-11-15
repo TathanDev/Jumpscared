@@ -13,6 +13,6 @@ public class JumpScareSlot extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        return stack.has(DataComponentsRegistry.JUMPSCARE_COMPONENT.get());
+        return stack.has(DataComponentsRegistry.JUMPSCARE_ID_COMPONENT.get());
     }
 }

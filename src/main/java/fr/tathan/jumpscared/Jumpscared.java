@@ -54,7 +54,6 @@ public class Jumpscared {
 
     public Jumpscared(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
-        modEventBus.addListener(this::commonSetup);
 
         BlocksRegistry.BLOCKS.register(modEventBus);
         BlockEntityRegistry.BLOCKS_ENTITY.register(modEventBus);
@@ -72,18 +71,6 @@ public class Jumpscared {
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
-
-    private void commonSetup(final FMLCommonSetupEvent event) {
-        // Some common setup code
-        LOGGER.info("HELLO FROM COMMON SETUP");
-
-        if (Config.logDirtBlock) LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT));
-
-        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
-
-        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
-    }
-
 
 
     public static ResourceLocation id(String path) {

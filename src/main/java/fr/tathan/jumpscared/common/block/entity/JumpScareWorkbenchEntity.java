@@ -1,5 +1,6 @@
 package fr.tathan.jumpscared.common.block.entity;
 
+import fr.tathan.jumpscared.Config;
 import fr.tathan.jumpscared.common.data.JumpScareData;
 import fr.tathan.jumpscared.common.jumpscare.JumpScare;
 import fr.tathan.jumpscared.common.menu.JumpscareWorkbenchMenu;
@@ -20,6 +21,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
@@ -105,13 +107,13 @@ public class JumpScareWorkbenchEntity extends BaseContainerBlockEntity {
     public void createJumpScareItem(JumpScare jumpScare, Container container, boolean sync) {
         var pos = this.getBlockPos();
 
-        container.getItem(0).set(DataComponentsRegistry.JUMPSCARE_COMPONENT, jumpScare);
+        container.getItem(0).set(DataComponentsRegistry.JUMPSCARE_ID_COMPONENT, jumpScare.id());
 
-        this.getLevel().removeBlock(this.getBlockPos(), false);
-
-        this.getLevel().removeBlockEntity(this.getBlockPos());
-        this.getLevel().addParticle(ParticleTypes.EXPLOSION, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 0.1, 0.1, 0.1);
-
+        if(Config.destroyWorkbench) {
+            this.getLevel().removeBlock(this.getBlockPos(), false);
+            this.getLevel().removeBlockEntity(this.getBlockPos());
+            this.getLevel().addParticle(ParticleTypes.EXPLOSION, pos.getX() + 0.5, pos.getY() + 1.0, pos.getZ() + 0.5, 0.1, 0.1, 0.1);
+        }
 
         setChanged();
 

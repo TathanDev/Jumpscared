@@ -25,7 +25,7 @@ public record RemoveCurrentJumpscare() implements CustomPacketPayload {
     };
 
     public static void handleDataOnMain(final RemoveCurrentJumpscare data, final IPayloadContext context) {
-        context.player().removeData(DataAttachmentsRegistry.JUMPSCARE);
+        context.player().removeData(DataAttachmentsRegistry.CURRENT_PLAYER_JUMPSCARE);
     }
 
 

@@ -16,7 +16,7 @@ public class ItemsRegistry {
     public static final Supplier<JumpScareItem> JUMPSCARE_ITEM = ITEMS.register("jumpscare",
             registryName -> new JumpScareItem(
                     new Item.Properties()
-                            .component(DataComponentsRegistry.JUMPSCARE_COMPONENT.get(), JumpScare.DEFAULT)
+                            .component(DataComponentsRegistry.JUMPSCARE_ID_COMPONENT.get(), JumpScare.DEFAULT.id())
             )
     );
 
@@ -24,6 +24,7 @@ public class ItemsRegistry {
             registryName -> new BlockItem(BlocksRegistry.JUMPSCARE_BLOCK.get(),
                     new Item.Properties()
                             .component(DataComponentsRegistry.JUMPSCARE_COMPONENT.get(), JumpScare.DEFAULT)
+                            .component(DataComponentsRegistry.JUMPSCARE_ID_COMPONENT.get(), JumpScare.DEFAULT.id())
             )
     );
 

@@ -1,7 +1,6 @@
 package fr.tathan.jumpscared.client.overlay;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import fr.tathan.jumpscared.Jumpscared;
 import fr.tathan.jumpscared.common.jumpscare.JumpScare;
 import fr.tathan.jumpscared.common.network.packets.RemoveCurrentJumpscare;
 import fr.tathan.jumpscared.common.registry.DataAttachmentsRegistry;
@@ -22,8 +21,8 @@ public class JumpScareOverlay {
         LocalPlayer player = mc.player;
 
 
-        if(player !=null && player.hasData(DataAttachmentsRegistry.JUMPSCARE)) {
-            JumpScare jumpScare = player.getData(DataAttachmentsRegistry.JUMPSCARE);
+        if(player !=null && player.hasData(DataAttachmentsRegistry.CURRENT_PLAYER_JUMPSCARE)) {
+            JumpScare jumpScare = player.getData(DataAttachmentsRegistry.CURRENT_PLAYER_JUMPSCARE);
 
             int windowWidth = mc.getWindow().getGuiScaledWidth();
 

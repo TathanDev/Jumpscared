@@ -20,16 +20,29 @@ public class BlockDestroyedMixin {
         String positionString = Events.getPos(pos);
 
         var access = level.getChunk(pos);
-        JumpScare.NewContainer container = access.getExistingDataOrNull(DataAttachmentsRegistry.JUMPSCARE_CONTAINER);
+        JumpScare.NewContainer oldContainer = access.getExistingDataOrNull(DataAttachmentsRegistry.JUMPSCARE_CONTAINER);
 
-        if(container == null || container.map() == null) {
+        if(oldContainer == null || oldContainer.map() == null) {
             return;
         }
 
-        container.map().forEach((pair) -> {
+        oldContainer.map().forEach((pair) -> {
             if(pair.getFirst().equals(positionString)) {
-                access.setData(DataAttachmentsRegistry.JUMPSCARE_CONTAINER, container.removeJumpScareAt(positionString));
+                access.setData(DataAttachmentsRegistry.JUMPSCARE_CONTAINER, oldContainer.removeJumpScareAt(positionString));
             }
         });
+
+        JumpScare.IdContainer idContainer = access.getExistingDataOrNull(DataAttachmentsRegistry.JUMPSCARE_ID_CONTAINER);
+
+        if(idContainer == null || idContainer.jumpscares() == null) {
+            return;
+        }
+
+        idContainer.jumpscares().forEach((pair) -> {
+            if(pair.getFirst().equals(positionString)) {
+                access.setData(DataAttachmentsRegistry.JUMPSCARE_ID_CONTAINER, idContainer.removeJumpScareAt(positionString));
+            }
+        });
+
     }
 }
